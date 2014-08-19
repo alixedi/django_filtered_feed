@@ -12,10 +12,12 @@ django_filtered_feed
         :target: https://crate.io/packages/django_filtered_feed?version=latest
 
 
-Feeds sans noise.
+In a nutshell::
 
-Documentation
--------------
+    GET 
+
+Installation
+------------
 
 The full documentation is at http://django_filtered_feed.rtfd.org.
 

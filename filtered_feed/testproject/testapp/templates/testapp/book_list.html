@@ -1,0 +1,16 @@
+{% block content %}
+    <p>
+        <form action="" method="get">
+            {{ filter.form.as_p }}
+            <input type="submit" />
+        </form>
+    </p>
+    <p>
+        {% for obj in filter %}
+            {{ obj.name }} - {{ obj.pages }}<br />
+        {% endfor %}
+    </p>
+    <p>
+        <a href="feed?{{ request.GET.urlencode }}">Subscribe</a>
+    </p>
+{% endblock %}
