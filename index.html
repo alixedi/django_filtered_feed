@@ -46,54 +46,49 @@
 
 
       <section id="main_content">
-        <p>So the average-joe RSS is binary ie either you subscribe to a feed or you don’t. This approach results in a ridiculous amount of junk in our inbox. What if we could subscribe <code>define</code> the feed that we would like to subscribe to? Thanks to the stellar [django syndication framework][] and [django filters][], I was able to hack together a fix.</p>
+        <p>So the average-joe RSS is binary ie either you subscribe to a feed or you don’t. This approach results in a ridiculous amount of junk in our inbox. What if we could subscribe <code>define</code> the feed that we would like to subscribe to? Thanks to the stellar <a href="https://docs.djangoproject.com/en/dev/ref/contrib/syndication/">django syndication framework</a> and <a href="https://github.com/alex/django-filter">django filters</a>, I was able to hack together a fix.</p>
 
 <p>If you have a <code>Book</code> model like so:</p>
 
-<pre><code>{% highlight python  %}
-class Book(models.Model):
-    name = models.CharField(max_length=256)
-    pages = models.IntegerField()
+<div class="highlight highlight-python"><pre>    <span class="k">class</span> <span class="nc">Book</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+        <span class="n">pages</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
 
-def __unicode__(self):
-    return self.name
-{% endhighlight  %}
-</code></pre>
+    <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
 
-<p>A [django_filter][django filters] <code>FilterSet</code> like so:</p>
+<p>A <a href="https://github.com/alex/django-filter">django filters</a> <code>FilterSet</code> like so:</p>
 
-<pre><code>{% highlight python  %}
-class BookFilterSet(django_filters.FilterSet):
-    pages = django_filters.NumberFilter(lookup_type='lt')
-    class Meta:
-        model = Book
-        fields = ['pages']
-{% endhighlight  %}
-</code></pre>
+<div class="highlight highlight-python"><pre>    <span class="k">class</span> <span class="nc">BookFilterSet</span><span class="p">(</span><span class="n">django_filters</span><span class="o">.</span><span class="n">FilterSet</span><span class="p">):</span>
+        <span class="n">pages</span> <span class="o">=</span> <span class="n">NumberFilter</span><span class="p">(</span><span class="n">lookup_type</span><span class="o">=</span><span class="s">'lt'</span><span class="p">)</span>
+        <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">Book</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s">'pages'</span><span class="p">]</span>
+</pre></div>
 
 <p>A <code>FilteredFeed</code> class like so:</p>
 
-<pre><code>{% highlight python  %}
-class BookFilteredFeed(BaseFilteredFeed):
-    model = Book
-    filter_set = BookFilterSet
-    title = "BookFeed"
-    link = "http://localhost:8000"
-    description = "Get alerts for new books - less than given number of pages!"
+<div class="highlight highlight-python"><pre>    <span class="k">class</span> <span class="nc">BookFilteredFeed</span><span class="p">(</span><span class="n">BaseFilteredFeed</span><span class="p">):</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Book</span>
+        <span class="n">filter_set</span> <span class="o">=</span> <span class="n">BookFilterSet</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s">"BookFeed"</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="s">"http://localhost:8000"</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"Alerts for new books!"</span>
 
-    def item_link(self, item):
-        return reverse('book_detail', args=[item.id])
-{% endhighlight  %}
-</code></pre>
+        <span class="k">def</span> <span class="nf">item_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">reverse</span><span class="p">(</span><span class="s">'book_detail'</span><span class="p">,</span> 
+                           <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="p">])</span>
+</pre></div>
 
 <p>Hook up the necessary urls like so:</p>
 
-<pre><code>{% highlight python  %}
-urlpatterns = patterns('',
-    url(r'^books/feed$', BookFilteredFeed.as_view(), name='book_feed'),
-)
-{% endhighlight  %}
-</code></pre>
+<div class="highlight highlight-python"><pre>    <span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">''</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">(</span><span class="s">r'^books/feed$'</span><span class="p">,</span> 
+            <span class="n">BookFilteredFeed</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> 
+            <span class="n">name</span><span class="o">=</span><span class="s">'book_feed'</span><span class="p">),</span>
+    <span class="p">)</span>
+</pre></div>
 
 <p>And finally, if we have the following 3 books in our DB:</p>
 
@@ -101,13 +96,13 @@ urlpatterns = patterns('',
 <li> Introduction to Python (100 pages)</li>
 <li> Introduction to C (300 pages)</li>
 <li> Javascript - The good parts (300 pages)</li>
-</ol><p>Hitting [<a href="http://localhost:8000/books/feed">http://localhost:8000/books/feed</a>][] will give you an RSS feed includes:</p>
+</ol><p>Hitting <a href="http://localhost:8000/books/feed">http://localhost:8000/books/feed</a> will give you an RSS feed includes:</p>
 
 <ul>
 <li>  Introduction to Python</li>
 <li>  Introduction to C</li>
 <li>  Javascript - The good parts</li>
-</ul><p>And hitting [<a href="http://localhost:8000/books/feed?pages=200">http://localhost:8000/books/feed?pages=200</a>][] will give you an RSS feed that just includes:</p>
+</ul><p>And hitting <a href="http://localhost:8000/books/feed?pages=200">http://localhost:8000/books/feed?pages=200</a> will give you an RSS feed that just includes:</p>
 
 <ul>
 <li>  Introduction to Python</li>
@@ -119,14 +114,12 @@ urlpatterns = patterns('',
 
 <p>Followed ofcourse by including <code>filtered_feed</code> in your <code>INSTALLED_APPS</code>.</p>
 
-<pre><code>{% highlight python  %}
-INSTALLED_APPS = (
-    ...
-    'filtered_feed',
-    ...
-)
-{% endhighlight  %}
-</code></pre>
+<div class="highlight highlight-python"><pre>    <span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="o">...</span>
+        <span class="s">'filtered_feed'</span><span class="p">,</span>
+        <span class="o">...</span>
+    <span class="p">)</span>
+</pre></div>
       </section>
 
       <footer>
