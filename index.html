@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640">
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Django filtered feed by alixedi</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/alixedi/django_filtered_feed">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Django filtered feed</h1>
+            <h2>Feeds sans noise.</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/alixedi/django_filtered_feed/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/alixedi/django_filtered_feed/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <p>So the average-joe RSS is binary ie either you subscribe to a feed or you don’t. This approach results in a ridiculous amount of junk in our inbox. What if we could subscribe <code>define</code> the feed that we would like to subscribe to? Thanks to the stellar [django syndication framework][] and [django filters][], I was able to hack together a fix.</p>
+
+<p>If you have a <code>Book</code> model like so:</p>
+
+<pre><code>{% highlight python  %}
+class Book(models.Model):
+    name = models.CharField(max_length=256)
+    pages = models.IntegerField()
+
+def __unicode__(self):
+    return self.name
+{% endhighlight  %}
+</code></pre>
+
+<p>A [django_filter][django filters] <code>FilterSet</code> like so:</p>
+
+<pre><code>{% highlight python  %}
+class BookFilterSet(django_filters.FilterSet):
+    pages = django_filters.NumberFilter(lookup_type='lt')
+    class Meta:
+        model = Book
+        fields = ['pages']
+{% endhighlight  %}
+</code></pre>
+
+<p>A <code>FilteredFeed</code> class like so:</p>
+
+<pre><code>{% highlight python  %}
+class BookFilteredFeed(BaseFilteredFeed):
+    model = Book
+    filter_set = BookFilterSet
+    title = "BookFeed"
+    link = "http://localhost:8000"
+    description = "Get alerts for new books - less than given number of pages!"
+
+    def item_link(self, item):
+        return reverse('book_detail', args=[item.id])
+{% endhighlight  %}
+</code></pre>
+
+<p>Hook up the necessary urls like so:</p>
+
+<pre><code>{% highlight python  %}
+urlpatterns = patterns('',
+    url(r'^books/feed$', BookFilteredFeed.as_view(), name='book_feed'),
+)
+{% endhighlight  %}
+</code></pre>
+
+<p>And finally, if we have the following 3 books in our DB:</p>
+
+<ol>
+<li> Introduction to Python (100 pages)</li>
+<li> Introduction to C (300 pages)</li>
+<li> Javascript - The good parts (300 pages)</li>
+</ol><p>Hitting [<a href="http://localhost:8000/books/feed">http://localhost:8000/books/feed</a>][] will give you an RSS feed includes:</p>
+
+<ul>
+<li>  Introduction to Python</li>
+<li>  Introduction to C</li>
+<li>  Javascript - The good parts</li>
+</ul><p>And hitting [<a href="http://localhost:8000/books/feed?pages=200">http://localhost:8000/books/feed?pages=200</a>][] will give you an RSS feed that just includes:</p>
+
+<ul>
+<li>  Introduction to Python</li>
+</ul><p>You users will forever remain grateful for sparing them the deluge that follows a binary subscription. You will be hailed the king of syndication, worshipped as a rock star and live happily ever after. The best part is that it takes a minute to get started:</p>
+
+<blockquote>
+<p>pip install django_filtered_feed</p>
+</blockquote>
+
+<p>Followed ofcourse by including <code>filtered_feed</code> in your <code>INSTALLED_APPS</code>.</p>
+
+<pre><code>{% highlight python  %}
+INSTALLED_APPS = (
+    ...
+    'filtered_feed',
+    ...
+)
+{% endhighlight  %}
+</code></pre>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/alixedi">alixedi</a> can be found on <a href="https://github.com/alixedi/django_filtered_feed">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
