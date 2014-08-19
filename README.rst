@@ -11,6 +11,9 @@ django_filtered_feed
 .. image:: https://pypip.in/d/django_filtered_feed/badge.png
         :target: https://crate.io/packages/django_filtered_feed?version=latest
 
+.. image:: https://coveralls.io/repos/alixedi/django_filtered_feed/badge.png
+  :target: https://coveralls.io/r/alixedi/django_filtered_feed
+
 
 If you have a ``Book`` model like so: ::
 
