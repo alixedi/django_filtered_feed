@@ -1,4 +1,4 @@
-django>=1.5.1
+django==1.5
 
 # Additional requirements go here
 django-filter==0.7
