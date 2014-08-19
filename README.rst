@@ -12,7 +12,7 @@ django_filtered_feed
         :target: https://crate.io/packages/django_filtered_feed?version=latest
 
 
-If you have a `Book` model like so: ::
+If you have a ``Book`` model like so: ::
 
     class Book(models.Model):
         name = models.CharField(max_length=256)
@@ -21,7 +21,7 @@ If you have a `Book` model like so: ::
     def __unicode__(self):
         return self.name
 
-A (django_filter)[https://github.com/alex/django-filter] `FilterSet` like so: ::
+A `django_filter <https://github.com/alex/django-filter>`_ ``FilterSet`` like so: ::
 
     class BookFilterSet(django_filters.FilterSet):
         pages = django_filters.NumberFilter(lookup_type='lt')
@@ -29,7 +29,7 @@ A (django_filter)[https://github.com/alex/django-filter] `FilterSet` like so: ::
             model = Book
             fields = ['pages']
 
-A `FilteredFeed` class like so: ::
+A ``FilteredFeed`` class like so: ::
 
     class BookFilteredFeed(BaseFilteredFeed):
         model = Book
@@ -47,26 +47,30 @@ Hook up the necessary urls like so: ::
         url(r'^books/feed$', BookFilteredFeed.as_view(), name='book_feed'),
     )
 
-And finally, 3 books, like so: ::
+And finally, if we have the following 3 books in our DB:
 
-    1. Introduction to Python (100 pages)
-    2. Introduction to C (300 pages)
-    3. Javascript - The good parts (300 pages)
+1. Introduction to Python (100 pages)
+2. Introduction to C (300 pages)
+3. Javascript - The good parts (300 pages)
 
-Hitting `http://localhost:8000/books/feed` will give you an RSS feed that looks like: ::
+Hitting `http://localhost:8000/books/feed <http://localhost:8000/books/feed>`_ will give you an RSS feed includes:
 
-    Introduction to Python
-    Introduction to C
-    Javascript - The good parts
+* Introduction to Python
+* Introduction to C
+* Javascript - The good parts
 
-And hitting `http://localhost:8000/books/feed?pages=200` will give you an RSS feed that looks like: ::
+And hitting `http://localhost:8000/books/feed?pages=200 <http://localhost:8000/books/feed?pages=200>`_ will give you an RSS feed that just includes:
 
-    Introduction to Python
+* Introduction to Python
 
-You users will forever remain grateful for sparing them the deluge that follows a binary subscription. You will be hailed the king of syndication, worshipped as a rock star and live happily ever after.
-
-The best part is that it takes a minute to get started: ::
+You users will forever remain grateful for sparing them the deluge that follows a binary subscription. You will be hailed the king of syndication, worshipped as a rock star and live happily ever after. The best part is that it takes a minute to get started: ::
 
     pip install django_filtered_feed
 
 Followed ofcourse by including `filtered_feed` in your `INSTALLED_APPS`. ::
+
+    INSTALLED_APPS = (
+        ...
+        'filtered_feed',
+        ...
+    )
