@@ -21,7 +21,7 @@ If you have a `Book` model like so: ::
     def __unicode__(self):
         return self.name
 
-A [django_filter](https://github.com/alex/django-filter) `FilterSet` like so: ::
+A (django_filter)[https://github.com/alex/django-filter] `FilterSet` like so: ::
 
     class BookFilterSet(django_filters.FilterSet):
         pages = django_filters.NumberFilter(lookup_type='lt')
@@ -70,9 +70,3 @@ The best part is that it takes a minute to get started: ::
     pip install django_filtered_feed
 
 Followed ofcourse by including `filtered_feed` in your `INSTALLED_APPS`. ::
-
-
-Features
---------
-
-* TODO
