@@ -1,3 +1,5 @@
 django>=1.5.1
 
 # Additional requirements go here
+django-filter==0.7
+feedparser==5.1.3
