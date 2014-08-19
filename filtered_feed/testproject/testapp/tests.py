@@ -23,7 +23,7 @@ class FilteredFeedTest(TestCase):
         """
         Hits the feed - it should return all entries
         """
-        res = self.client.get("http://localhost:8000/books/")
+        res = self.client.get("http://localhost:8000/books/feed")
         self.assertEqual(200, res.status_code)
         r = feedparser.parse(res.content)
         entries = [entry['summary_detail']['value'] for entry in r['entries']]
@@ -33,7 +33,7 @@ class FilteredFeedTest(TestCase):
         """
         Hits the feed at pages less than 500 - should give us Python
         """
-        res = self.client.get("http://localhost:8000/books/?pages=500")
+        res = self.client.get("http://localhost:8000/books/feed?pages=500")
         self.assertEqual(200, res.status_code)
         r = feedparser.parse(res.content)
         entries = [entry['summary_detail']['value'] for entry in r['entries']]
