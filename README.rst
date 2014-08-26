@@ -59,7 +59,7 @@ And finally, if we have the following 3 books in our DB:
 2. Introduction to C (300 pages)
 3. Javascript - The good parts (300 pages)
 
-Hitting `http://localhost:8000/books/feed <http://localhost:8000/books/feed>`_ will give you an RSS feed includes:
+Hitting `http://localhost:8000/books/feed <http://localhost:8000/books/feed>`_ will give you an RSS feed that includes:
 
 * Introduction to Python
 * Introduction to C
